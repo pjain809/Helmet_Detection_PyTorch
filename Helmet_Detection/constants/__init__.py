@@ -1,4 +1,6 @@
 
+import torch
+
 ARTIFACTS_DIR: str = "artifacts"
 
 """
@@ -35,3 +37,16 @@ DATA_TRANSFORMATION_TRAIN_FILE_NAME = "train.pkl"
 DATA_TRANSFORMATION_TEST_FILE_NAME = "test.pkl"
 DATA_TRANSFORMATION_TEST_SPLIT = "test"
 DATA_TRANSFORMATION_TRAIN_SPLIT = "train"
+
+
+"""
+Model Trainer Related Configuration
+"""
+MODEL_TRAINER_DIR_NAME: str = "model_trainer"
+TRAINED_MODEL_DIR = "Model"
+TRAINED_MODEL_NAME = "best.pt"
+TRAINED_BATCH_SIZE = 2
+TRAINED_SHUFFLE = False
+TRAINED_NUM_WORKERS = 1
+EPOCH = 1
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")

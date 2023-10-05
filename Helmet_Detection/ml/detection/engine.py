@@ -4,10 +4,10 @@ import time
 
 import torch
 import torchvision.models.detection.mask_rcnn
-from helmet.exception import HelmetException
-from helmet.ml.detection import utils
-from helmet.ml.detection.coco_eval import CocoEvaluator
-from helmet.ml.detection.coco_utils import get_coco_api_from_dataset
+from Helmet_Detection.exception import HelmetException
+from Helmet_Detection.ml.detection import utils
+from Helmet_Detection.ml.detection.coco_eval import CocoEvaluator
+from Helmet_Detection.ml.detection.coco_utils import get_coco_api_from_dataset
 
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, scaler=None):

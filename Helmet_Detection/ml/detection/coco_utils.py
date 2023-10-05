@@ -5,10 +5,10 @@ import sys
 import torch
 import torch.utils.data
 import torchvision
-import helmet.ml.detection.transforms as T
+import Helmet_Detection.ml.detection.transforms as T
 from pycocotools import mask as coco_mask
 from pycocotools.coco import COCO
-from helmet.exception import HelmetException
+from Helmet_Detection.exception import HelmetException
 
 
 class FilterAndRemapCocoCategories:
