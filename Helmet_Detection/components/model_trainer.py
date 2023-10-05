@@ -13,7 +13,6 @@ from Helmet_Detection.exception import HelmetException
 from Helmet_Detection.utils.main_utils import load_object
 from Helmet_Detection.entity.config_entity import ModelTrainerConfig
 from Helmet_Detection.ml.models.model_optimiser import model_optimiser
-from Helmet_Detection.ml.detection.engine import train_one_epoch, evaluate
 from Helmet_Detection.entity.artifacts_entity import DataTransformationArtifact, ModelTrainerArtifact
 from torchvision.models.detection import FasterRCNN_MobileNet_V3_Large_FPN_Weights
 
@@ -37,7 +36,7 @@ class ModelTrainer:
                 images = list(image.to(device) for image in images)
                 targets = [{k: torch.tensor(v).to(device) for k, v in t.items()} for t in targets]
 
-                loss_dict = model(images, targets)  # the model computes the loss automatically if we pass in targets
+                loss_dict = model(images, targets)
                 losses = sum(loss for loss in loss_dict.values())
                 loss_dict_append = {k: v.item() for k, v in loss_dict.items()}
                 loss_value = losses.item()
@@ -69,54 +68,52 @@ class ModelTrainer:
 
     @staticmethod
     def collate_fn(batch):
-        """
-        This is our collating function for the train dataloader,
-        it allows us to create batches of data that can be easily pass into the model
-        """
         try:
             return tuple(zip(*batch))
         except Exception as e:
             raise HelmetException(e, sys) from e
 
     def initiate_model_trainer(self, ) -> ModelTrainerArtifact:
-        logger.info("Initiated Model Trainer stage (Reached ModelTrainer class)...")
+        if os.path.exists(self.model_trainer_config.trained_model_path):
+            logger.info(f"Trained Model already available")
 
-        try:
-            train_dataset = load_object(self.data_transformation_artifact.transformed_train_object)
-            test_dataset = load_object(self.data_transformation_artifact.transformed_test_object)
+            model_trainer_artifact = ModelTrainerArtifact(
+                trained_model_path=self.model_trainer_config.trained_model_path)
+            logger.info(f"Model trainer artifact: {model_trainer_artifact}")
+            return model_trainer_artifact
 
-            train_loader = DataLoader(train_dataset,
-                                      batch_size=self.model_trainer_config.BATCH_SIZE,
-                                      shuffle=self.model_trainer_config.SHUFFLE,
-                                      num_workers=self.model_trainer_config.NUM_WORKERS,
-                                      collate_fn=self.collate_fn)
+        else:
+            logger.info("Initiated Model Trainer stage (Reached ModelTrainer class)...")
+            try:
+                train_dataset = load_object(self.data_transformation_artifact.transformed_train_object)
+                test_dataset = load_object(self.data_transformation_artifact.transformed_test_object)
 
-            test_loader = DataLoader(test_dataset,
-                                     batch_size=1,
-                                     shuffle=self.model_trainer_config.SHUFFLE,
-                                     num_workers=self.model_trainer_config.NUM_WORKERS,
-                                     collate_fn=self.collate_fn)
+                train_loader = DataLoader(train_dataset,
+                                          batch_size=self.model_trainer_config.BATCH_SIZE,
+                                          shuffle=self.model_trainer_config.SHUFFLE,
+                                          num_workers=self.model_trainer_config.NUM_WORKERS,
+                                          collate_fn=self.collate_fn)
 
-            logger.info("Loaded training data loader object")
-            model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=FasterRCNN_MobileNet_V3_Large_FPN_Weights.COCO_V1)
-            logger.info("Loaded Faster RCNN model")
+                logger.info("Loaded training data loader object")
+                model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=FasterRCNN_MobileNet_V3_Large_FPN_Weights.COCO_V1)
+                logger.info("Loaded Faster RCNN model")
 
-            in_features = model.roi_heads.box_predictor.cls_score.in_features  # we need to change the head
-            model.roi_heads.box_predictor = models.detection.faster_rcnn.FastRCNNPredictor(in_features,
-                                                                                           self.data_transformation_artifact.number_of_classes)
-            optimiser = model_optimiser(model)
-            logger.info("Loaded optimiser")
+                in_features = model.roi_heads.box_predictor.cls_score.in_features  # we need to change the head
+                model.roi_heads.box_predictor = models.detection.faster_rcnn.FastRCNNPredictor(in_features,
+                                                                                               self.data_transformation_artifact.number_of_classes)
+                optimiser = model_optimiser(model)
+                logger.info("Loaded optimiser")
 
-            self.train(model, optimiser, train_loader, self.model_trainer_config.DEVICE, 1)
+                self.train(model, optimiser, train_loader, self.model_trainer_config.DEVICE, 1)
 
-            os.makedirs(self.model_trainer_config.trained_model_dir, exist_ok=True)
-            torch.save(model, self.model_trainer_config.trained_model_path)
-            logger.info(f"Saved the trained model")
+                os.makedirs(self.model_trainer_config.trained_model_dir, exist_ok=True)
+                torch.save(model, self.model_trainer_config.trained_model_path)
+                logger.info(f"Saved the trained model")
 
-            model_trainer_artifacts = ModelTrainerArtifact(trained_model_path=self.model_trainer_config.trained_model_path)
-            logger.info(f"Model trainer artifact: {model_trainer_artifacts}")
+                model_trainer_artifact = ModelTrainerArtifact(trained_model_path=self.model_trainer_config.trained_model_path)
+                logger.info(f"Model trainer artifact: {model_trainer_artifact}")
 
-            return model_trainer_artifacts
+                return model_trainer_artifact
 
-        except Exception as e:
-            raise HelmetException(e, sys) from e
+            except Exception as e:
+                raise HelmetException(e, sys) from e

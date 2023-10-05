@@ -42,6 +42,7 @@ DATA_TRANSFORMATION_TRAIN_SPLIT = "train"
 """
 Model Trainer Related Configuration
 """
+
 MODEL_TRAINER_DIR_NAME: str = "model_trainer"
 TRAINED_MODEL_DIR = "Model"
 TRAINED_MODEL_NAME = "best.pt"
@@ -50,3 +51,11 @@ TRAINED_SHUFFLE = False
 TRAINED_NUM_WORKERS = 1
 EPOCH = 1
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+"""
+Model Evaluation Related Configuration
+"""
+
+MODEL_EVALUATION_DIR_NAME: str = "model_evaluation"
+MODEL_EVALUATION_FILE_NAME: str = "loss.csv"

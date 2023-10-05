@@ -19,3 +19,8 @@ class DataTransformationArtifact:
 @dataclass
 class ModelTrainerArtifact:
     trained_model_path: str
+
+
+@dataclass
+class ModelEvaluationArtifact:
+    all_losses_file_path: str

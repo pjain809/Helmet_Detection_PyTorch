@@ -46,3 +46,13 @@ class ModelTrainerConfig:
     NUM_WORKERS: int = TRAINED_NUM_WORKERS
     EPOCH: int = EPOCH
     DEVICE: str = DEVICE
+
+
+@dataclass
+class ModelEvaluationConfig:
+    model_evaluation_dir: str = os.path.join(training_pipeline_config.artifacts_dir, MODEL_EVALUATION_DIR_NAME)
+    model_evaluation_loss_path: str = os.path.join(model_evaluation_dir, MODEL_EVALUATION_FILE_NAME)
+    device = DEVICE
+    batch: int = 1
+    shuffle: bool = TRAINED_SHUFFLE
+    num_workers: int = TRAINED_NUM_WORKERS
