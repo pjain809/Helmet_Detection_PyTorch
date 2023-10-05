@@ -7,7 +7,7 @@ Data Ingestion Related Configuration
 
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
 DATA_INGESTION_FEATURE_STORE_DIR: str = "feature_store"
-RAW_FILE_NAME:str = 'helmet'
+RAW_FILE_NAME: str = 'helmet'
 DATA_FILE_NAME = "helmet-data.zip"
 DATA_DOWNLOAD_URL: str = "https://drive.google.com/file/d/1oYBdYcQKPGPfqj7n4is-10k17vL6Cmlp/view?usp=sharing"
 DATA_INGESTION_ARTIFACTS_DIR = "DataIngestionArtifacts"
@@ -27,3 +27,11 @@ VERTICAL_FLIP = 0.3
 RANDOM_BRIGHTNESS_CONTRAST = 0.1
 COLOR_JITTER = 0.1
 BBOX_FORMAT = "coco"
+DATA_TRANSFORMATION_DIR_NAME: str = "data_transformation"
+DATA_TRANSFORMATION_FEATURE_STORE_DIR: str = "feature_store"
+DATA_TRANSFORMATION_TEST_DIR = 'Test'
+DATA_TRANSFORMATION_TRAIN_DIR = 'Train'
+DATA_TRANSFORMATION_TRAIN_FILE_NAME = "train.pkl"
+DATA_TRANSFORMATION_TEST_FILE_NAME = "test.pkl"
+DATA_TRANSFORMATION_TEST_SPLIT = "test"
+DATA_TRANSFORMATION_TRAIN_SPLIT = "train"
