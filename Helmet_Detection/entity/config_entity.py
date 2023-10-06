@@ -56,3 +56,4 @@ class ModelEvaluationConfig:
     batch: int = 1
     shuffle: bool = TRAINED_SHUFFLE
     num_workers: int = TRAINED_NUM_WORKERS
+

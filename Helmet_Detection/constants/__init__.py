@@ -59,3 +59,18 @@ Model Evaluation Related Configuration
 
 MODEL_EVALUATION_DIR_NAME: str = "model_evaluation"
 MODEL_EVALUATION_FILE_NAME: str = "loss.csv"
+
+
+"""
+Model Evaluation Related Configuration
+"""
+
+PREDICTION_CLASSES = ['Without Helmet', 'With Helmet']
+
+
+"""
+API Related Configuration
+"""
+
+APP_PORT = 8080
+APP_HOST = "0.0.0.0"
